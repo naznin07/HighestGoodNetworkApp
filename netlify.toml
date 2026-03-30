@@ -1,8 +1,14 @@
+
+
 [build]
-  # If your app is in a subfolder, change "base" to that folder name; otherwise remove it
-  base = ""
-  publish = "dist" # The folder where Vite outputs your build
-  command = "yarn run build"
+  command = "yarn build"
+  publish = "dist"          # Vite default output folder
+  # If your app is in a subfolder, uncomment and set base:
+  # base = "src"            # <-- replace "src" with your folder name if app is not at root
 
 [build.environment]
-  NODE_OPTIONS = "--max-old-space-size=4096"
+  NODE_OPTIONS = "--max-old-space-size=4096"  # avoids memory errors during build
+
+# Optional: if using Netlify Functions
+[functions]
+  directory = "netlify/functions"

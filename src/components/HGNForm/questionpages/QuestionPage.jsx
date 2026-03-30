@@ -10,19 +10,19 @@ import { Spinner } from 'reactstrap';
 import styles from '../styles/FrontendBackendQuestions.module.css';
 import { getBoxStyling, getFontColor } from '../../../styles';
 
-function QuestionPage({pageNumber, title, fieldNameMap, nextPage}){
-const navigate=useHistory();
-const dispatch =useDispatch();
-const location =useLocation();
-const{isOwner}=location.state ||{};
-const formData =useSelector(state=> state.hgnForm);
-const darkMode=useSelector(state=>state.theme.darkMode);
+function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
+  const navigate = useHistory();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const { isOwner } = location.state || {};
+  const formData = useSelector(state => state.hgnForm);
+  const darkMode = useSelector(state => state.theme.darkMode);
 
-const [questions, setQuestions]=useState([]);
-const[newVolunteer,setNewVolunteer]=useState(formData);
-const[editingIndex, setEditingIndex]=useState(null);
-const[editedText, setEditedText]=useState('');
-const[loading, setLoading]=useState(true);
+  const [questions, setQuestions] = useState([]);
+  const [newVolunteer, setNewVolunteer] = useState(formData);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editedText, setEditedText] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -44,29 +44,26 @@ const[loading, setLoading]=useState(true);
     fetchQuestions();
   }, [pageNumber, title]);
 
-const handleNext = e => {
+  const handleNext = e => {
     e.preventDefault();
     dispatch(setformData(newVolunteer));
     navigate.push(nextPage, { isOwner });
   };
 
   const handleBack = () => navigate.goBack();
-  
 
   const handleRadioChange = e => {
     const { name, value } = e.target;
     setNewVolunteer({ ...newVolunteer, [name]: value });
   };
 
-const handleEditClick = index => {
+  const handleEditClick = index => {
     setEditingIndex(index);
     setEditedText(questions[index].text); // Set the current question text to be edited
   };
 
- 
   const handleSaveClick = async index => {
     try {
-     
       await axios.put(ENDPOINTS.HGN_FORM_UPDATE_QUESTION(questions[index]._id), {
         text: editedText,
         page: 'pageNumber',
@@ -75,11 +72,11 @@ const handleEditClick = index => {
 
       setQuestions(prev => {
         const updated = [...prev];
-        updateds[index].text = editedText; // Update the question text locally
+        updated[index].text = editedText; // Update the question text locally
         return updated;
       });
 
-      setEditingIndex(null); 
+      setEditingIndex(null);
       toast.success('Question saved successfully.');
     } catch (error) {
       toast.error('Error saving question. Please try again.');
@@ -87,8 +84,8 @@ const handleEditClick = index => {
   };
 
   const searchQuestion = (page, qno) => {
-    const questiontext = questions.find(question => question.page === page && question.qno === qno);
-    return questiontext.text;
+    const question = questions.find(q => q.page === page && q.qno === qno);
+    return question ? question.text : '';
   };
 
   if (loading) {
@@ -101,7 +98,7 @@ const handleEditClick = index => {
 
   return (
     <div
-      className={`${styles.frontendBackendQuestions} ${darkMode ? 'bg-space-cadet' : ''}`}
+      className={`${styles.frontendBackendQuestions} ${darkMode ? styles.bgSpaceCadet : ''}`}
       style={getBoxStyling(darkMode)}
     >
       <h3 className={`${styles.blueStrip}`}>{title}</h3>
@@ -134,7 +131,7 @@ const handleEditClick = index => {
                       />
                     </div>
                   </div>
-                   ) : (
+                ) : (
                   <p className={`${styles.question} ${getFontColor(darkMode)}`}>
                     {searchQuestion(4, index + 1)}
                     {isOwner && (
@@ -157,7 +154,7 @@ const handleEditClick = index => {
                     >
                       {i + 1}
                     </label>
-                      <input
+                    <input
                       type="radio"
                       name={fieldName}
                       id={`${fieldName}_${i + 1}`}
