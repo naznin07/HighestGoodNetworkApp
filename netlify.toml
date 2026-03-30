@@ -1,0 +1,8 @@
+[build]
+  # If your app is in a subfolder, change "base" to that folder name; otherwise remove it
+  base = ""
+  publish = "dist" # The folder where Vite outputs your build
+  command = "yarn run build"
+
+[build.environment]
+  NODE_OPTIONS = "--max-old-space-size=4096"
