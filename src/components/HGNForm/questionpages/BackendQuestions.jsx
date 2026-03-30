@@ -1,5 +1,7 @@
 import React from 'react';
 import QuestionPage  from './QuestionPage';
+import { endsWith } from 'lodash';
+import { ENDPOINTS } from 'utils/URL';
 
  const fieldNameMapBackend = [
    'backend_Overall',
@@ -15,6 +17,15 @@ import QuestionPage  from './QuestionPage';
    'backend_AgileDevelopment',
  ];
  function BackendQuestions(){
-  return <QuestionPage pageNumber={4} title="Backend" fieldNameMap={fieldNameMapBackend} nextPage="/hgnForm/page5" />;
+  return (
+    <QuestionPage
+      pageNumber={4}
+      title="Backend"
+      fieldNameMap={fieldNameMapBackend}
+      nextPage="/hgnForm/page5"
+      backpage="/hgnForm/page5"
+      ENDPOINTS={ENDPOINTS}
+    />
+  );
  }
 export default BackendQuestions;
