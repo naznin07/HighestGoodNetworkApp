@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useHistory, useLocation } from 'react-router-dom';
 import { FaEdit, FaRegSave } from 'react-icons/fa';
 import axios from 'axios';
@@ -9,6 +10,33 @@ import { setformData } from '~/actions/hgnFormAction';
 import { Spinner } from 'reactstrap';
 import styles from '../styles/FrontendBackendQuestions.module.css';
 import { getBoxStyling, getFontColor } from '../../../styles';
+
+function RatingInput({ fieldName, value, selectedValue, onChange, darkMode }) {
+  return (
+    <div>
+      <label htmlFor={`${fieldName}_${value}`} className={getFontColor(darkMode)}>
+        {value}
+      </label>
+      <input
+        type="radio"
+        name={fieldName}
+        id={`${fieldName}_${value}`}
+        value={value}
+        onChange={onChange}
+        checked={selectedValue === value.toString()}
+        required
+      />
+    </div>
+  );
+}
+
+RatingInput.propTypes = {
+  fieldName: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+  selectedValue: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  darkMode: PropTypes.bool.isRequired,
+};
 
 function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
   const navigate = useHistory();
@@ -66,7 +94,7 @@ function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
     try {
       await axios.put(ENDPOINTS.HGN_FORM_UPDATE_QUESTION(questions[index]._id), {
         text: editedText,
-        page: 'pageNumber',
+        page: pageNumber,
         title,
       });
 
@@ -91,7 +119,7 @@ function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
   if (loading) {
     return (
       <div>
-        <Spinner color="primary" className={`${styles.spinnerHgnform}`} />;
+        <Spinner color="primary" className={`${styles.spinnerHgnform}`} />
       </div>
     );
   }
@@ -121,7 +149,7 @@ function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
                         value={editedText}
                         onChange={e => setEditedText(e.target.value)}
                         className={`${styles.editInput} ${getFontColor(darkMode)} ${
-                          darkMode ? 'bg-space-cadet' : ''
+                          darkMode ? styles.bgSpaceCadet : ''
                         }`}
                       />
                       <FaRegSave
@@ -133,7 +161,7 @@ function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
                   </div>
                 ) : (
                   <p className={`${styles.question} ${getFontColor(darkMode)}`}>
-                    {searchQuestion(4, index + 1)}
+                    {searchQuestion(pageNumber, index + 1)}
                     {isOwner && (
                       <FaEdit
                         className={`${styles.editIcon}`}
@@ -147,23 +175,14 @@ function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
 
               <div className={`${styles.frontendBackendRating}`}>
                 {Array.from({ length: 10 }, (_, i) => (
-                  <div key={i}>
-                    <label
-                      htmlFor={`${fieldName}_${i + 1}`}
-                      className={`${getFontColor(darkMode)}`}
-                    >
-                      {i + 1}
-                    </label>
-                    <input
-                      type="radio"
-                      name={fieldName}
-                      id={`${fieldName}_${i + 1}`}
-                      value={i + 1}
-                      onChange={handleRadioChange}
-                      checked={newVolunteer[fieldName] === (i + 1).toString()}
-                      required
-                    />
-                  </div>
+                  <RatingInput
+                    key={i}
+                    fieldName={fieldName}
+                    value={i + 1}
+                    selectedValue={newVolunteer[fieldName]}
+                    onChange={handleRadioChange}
+                    darkMode={darkMode}
+                  />
                 ))}
               </div>
             </div>
@@ -182,4 +201,12 @@ function QuestionPage({ pageNumber, title, fieldNameMap, nextPage }) {
     </div>
   );
 }
+
+QuestionPage.propTypes = {
+  pageNumber: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  fieldNameMap: PropTypes.arrayOf(PropTypes.string).isRequired,
+  nextPage: PropTypes.string.isRequired,
+};
+
 export default QuestionPage;
