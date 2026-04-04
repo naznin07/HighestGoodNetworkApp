@@ -25,7 +25,7 @@ function Page2() {
       <Banner />
       <QuestionnaireHeader ref={headerRef} />
       <GeneralQuestions />
-      <Progress progressValue={16.67 * 2} />
+      <Progress progressValue={16.67} />
     </div>
   );
 }

@@ -25,7 +25,7 @@ function Page5() {
       <Banner />
       <QuestionnaireHeader ref={headerRef} />
       <FollowupQuestions />
-      <Progress progressValue={16.67 * 5} />
+      <Progress progressValue={16.67} />
     </div>
   );
 }
